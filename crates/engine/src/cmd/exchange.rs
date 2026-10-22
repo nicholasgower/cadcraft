@@ -29,6 +29,8 @@ const MAX_PREVIEW_PX: u64 = 4096;
 /// Most sheets one PUBLISH plots.
 const MAX_SHEETS: usize = 256;
 
+/// The File menu's exchange commands: IMPORT, EXPORT (with its SVG `text` option), PREVIEW,
+/// PUBLISH, PDFBOOK and the not-yet-available ATTACH, SHARE and 3DORBIT.
 pub fn specs() -> Vec<CommandSpec> {
     vec![
         CommandSpec::new("import", "Import...", run_import)
@@ -93,6 +95,9 @@ fn write_file(cmd: &str, path: &str, bytes: &[u8]) -> Result<()> {
 
 // ---------- EXPORT ----------
 
+/// EXPORT: write the drawing in `format` (or `path`'s extension) to `path`, or return the bytes
+/// as base64 `data`. The host's exporter receives the JSON options (such as SVG `text`) when it
+/// installed one; otherwise the plain writer is used.
 fn run_export(s: &mut Session, p: &Value) -> Result<Value> {
     let hooks = io().ok_or_else(|| bad("export", "file formats are not available in this build"))?;
     let path = str_param(p, "path");
